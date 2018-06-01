@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Reversi.PositionState;
+using static Reversi.SpaceState;
 
 namespace Reversi
 {
@@ -40,6 +40,29 @@ namespace Reversi
                         _board[y, x] = State.Cross;
                     }
                 }
+            }
+        }
+
+        public State GetStateAt(Position pos)
+        {
+            return _board[pos.y, pos.x];
+        }
+
+        public bool IsEmptyAt(Position pos)
+        {
+            return _board[pos.y, pos.x] == State.Empty;
+        }
+
+        public bool IsOutOfBounds(Position pos)
+        {
+            return pos.x < 0 || pos.x >= _sideDimensions || pos.y < 0 || pos.y >= _sideDimensions;
+        }
+
+        public void PlacePieceAt(Position pos, State playerState)
+        {
+            if (IsEmptyAt(pos))
+            {
+                _board[pos.y, pos.x] = playerState;
             }
         }
 

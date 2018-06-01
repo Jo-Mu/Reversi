@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Reversi
 {
-    class PositionState
+    class SpaceState
     {
         public enum State
         {

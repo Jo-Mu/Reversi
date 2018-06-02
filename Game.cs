@@ -16,6 +16,11 @@ namespace Reversi
             int boardSideDimensions = 8;
             Board board = new Board(boardSideDimensions);
 
+            //testing piece placement and flipping
+            board.PlacePieceAt(new Position(4, 5), player1);
+            board.PlacePieceAt(new Position(5, 5), player2);
+            board.PlacePieceAt(new Position(3, 5), player2);
+
             board.DrawBoard();
         }
     }

@@ -63,7 +63,53 @@ namespace Reversi
             if (IsEmptyAt(pos))
             {
                 _board[pos.y, pos.x] = playerState;
+
+                for(int x = -1; x <= 1; x++)
+                {
+                    for(int y = -1; y <= 1; y++)
+                    {
+                        if(!(x == 0 && y == 0))
+                        {
+                            FlipSurroundedPieces(pos, new Position(x, y), playerState);
+                        }
+                    }
+                }
+
             }
+        }
+
+        private void Flip(Position pos)
+        {
+            if (GetStateAt(pos) == State.Cross)
+            {
+                _board[pos.y, pos.x] = State.Circle;
+            }
+
+            else if (GetStateAt(pos) == State.Circle)
+            {
+                _board[pos.y, pos.x] = State.Cross;
+            }
+        }
+
+        public bool FlipSurroundedPieces(Position pos, Position posChange, State playerState)
+        {
+            Position neighborPos = pos + posChange;
+
+            if (IsOutOfBounds(neighborPos) || IsEmptyAt(neighborPos))
+            {
+                return false;
+            }
+            else if (GetStateAt(neighborPos) == playerState)
+            {
+                return true;
+            }
+            else if (FlipSurroundedPieces(neighborPos, posChange, playerState))
+            {
+                Flip(neighborPos);
+                return true;
+            }
+
+            return false;
         }
 
         public void DrawBoard()

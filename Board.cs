@@ -43,7 +43,7 @@ namespace Reversi
             }
         }
 
-        public State GetStateAt(Position pos)
+        private State GetStateAt(Position pos)
         {
             return _board[pos.y, pos.x];
         }
@@ -91,7 +91,7 @@ namespace Reversi
             }
         }
 
-        public bool FlipSurroundedPieces(Position pos, Position posChange, State playerState)
+        private bool FlipSurroundedPieces(Position pos, Position posChange, State playerState)
         {
             Position neighborPos = pos + posChange;
 

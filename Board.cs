@@ -235,38 +235,33 @@ namespace Reversi
 
         public State TallyWinner()
         {
-            if (IsGameOver())
+            int crossScore = 0;
+            int circleScore = 0;
+
+            foreach(State state in _board)
             {
-                int crossScore = 0;
-                int circleScore = 0;
-
-                foreach(State state in _board)
+                if(state == State.Cross)
                 {
-                    if(state == State.Cross)
-                    {
-                        crossScore++;
-                    }
-                    else if(state == State.Circle)
-                    {
-                        circleScore++;
-                    }
+                    crossScore++;
                 }
-
-                if(crossScore > circleScore)
+                else if(state == State.Circle)
                 {
-                    return State.Cross;
-                }
-                else if(circleScore > crossScore)
-                {
-                    return State.Circle;
-                }
-                else
-                {
-                    return State.Empty;
+                    circleScore++;
                 }
             }
 
-            return State.Empty;
+            if(crossScore > circleScore)
+            {
+                return State.Cross;
+            }
+            else if(circleScore > crossScore)
+            {
+                return State.Circle;
+            }
+            else
+            {
+                return State.Empty;
+            }
         }
 
         public void DrawBoard()

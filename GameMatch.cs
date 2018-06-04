@@ -169,16 +169,44 @@ namespace Reversi
 
         public State Play()
         {
-            while (!_board.IsGameOver())
+            bool boardFullGameOver = false;
+
+            while (!boardFullGameOver)
             {
                 PlayerTurn(_player1);
 
                 if (_board.IsGameOver())
                 {
+                    boardFullGameOver = true;
+                    break;
+                }
+                else if (!_board.AnyPlayerPiecesRemaining(_player2))
+                {
+                    Console.WriteLine("\nPlayer 2 out of pieces. Game Over!");
                     break;
                 }
 
                 PlayerTurn(_player2);
+
+                if (_board.IsGameOver())
+                {
+                    boardFullGameOver = true;
+                }
+                else if (!_board.AnyPlayerPiecesRemaining(_player1))
+                {
+                    Console.WriteLine("\nPlayer 1 out of pieces. Game Over!");
+                    break;
+                }
+                else if(!(_board.IsAnyMovePossible(_player1) || _board.IsAnyMovePossible(_player2)))
+                {
+                    Console.WriteLine("\nNo more valid moves possible. Game Over!");
+                    break;
+                }
+            }
+
+            if (boardFullGameOver)
+            {
+                Console.WriteLine("\nGame Over!");
             }
 
             return _board.TallyWinner();

@@ -46,7 +46,7 @@ namespace Reversi
             }
         }
 
-        private State GetStateAt(Position pos)
+        public State GetStateAt(Position pos)
         {
             return _board[pos.y, pos.x];
         }

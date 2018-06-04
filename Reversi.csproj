@@ -45,6 +45,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IntExtensions.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="SpaceState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

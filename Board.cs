@@ -9,8 +9,10 @@ namespace Reversi
 {
     class Board
     {
-        public State[,] _board;
+        private State[,] _board;
         private readonly int _sideDimensions;
+        private int _emptySpacesRemaining;
+        public int SideDimensions { get { return _sideDimensions; } }
 
         public Board(int sideDimensions)
         {
@@ -26,6 +28,7 @@ namespace Reversi
 
             _board = new State[sideDimensions, sideDimensions];
             _sideDimensions = sideDimensions;
+            _emptySpacesRemaining = (sideDimensions * sideDimensions) - 4;
 
             for(int x = (sideDimensions / 2) - 1; x <= sideDimensions / 2; x++)
             {
@@ -43,7 +46,7 @@ namespace Reversi
             }
         }
 
-        private State GetStateAt(Position pos)
+        public State GetStateAt(Position pos)
         {
             return _board[pos.y, pos.x];
         }
@@ -58,24 +61,62 @@ namespace Reversi
             return pos.x < 0 || pos.x >= _sideDimensions || pos.y < 0 || pos.y >= _sideDimensions;
         }
 
-        public void PlacePieceAt(Position pos, State playerState)
+        public bool IsAdjacentToEnemyPiece(Position pos, State playerState)
         {
+            State enemyState = (playerState == State.Cross) ? State.Circle : State.Cross;
+            int xStart = (pos.x - 1).LimitToRange(0, _sideDimensions - 1);
+            int xEnd = (pos.x + 1).LimitToRange(0, _sideDimensions - 1);
+            int yStart = (pos.y - 1).LimitToRange(0, _sideDimensions - 1);
+            int yEnd = (pos.y + 1).LimitToRange(0, _sideDimensions - 1);
+
+            for(int x = xStart; x <= xEnd; x++)
+            {
+                for(int y = yStart; y <= yEnd; y++)
+                {
+                    if(!(x == pos.x && y == pos.y))
+                    {
+                        if(GetStateAt(new Position(x, y)) == enemyState)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool AttemptPlacePieceAt(Position pos, State playerState)
+        {
+            bool validMove = false;
+
             if (IsEmptyAt(pos))
             {
-                _board[pos.y, pos.x] = playerState;
+                State enemyState = (playerState == State.Cross) ? State.Circle : State.Cross;
 
-                for(int x = -1; x <= 1; x++)
+                for (int x = -1; x <= 1; x++)
                 {
                     for(int y = -1; y <= 1; y++)
                     {
-                        if(!(x == 0 && y == 0))
+                        Position posChange = new Position(x, y);
+
+                        if(!(x == 0 && y == 0) && !IsOutOfBounds(pos + posChange))
                         {
-                            FlipSurroundedPieces(pos, new Position(x, y), playerState);
+                            if(GetStateAt(pos + posChange) == enemyState && FlipSurroundedPieces(pos, posChange, playerState))
+                            {
+                                validMove = true;
+                            }
                         }
                     }
                 }
 
+                if (validMove)
+                {
+                    _board[pos.y, pos.x] = playerState;
+                    _emptySpacesRemaining--;
+                }
             }
+
+            return validMove;
         }
 
         private void Flip(Position pos)
@@ -110,6 +151,47 @@ namespace Reversi
             }
 
             return false;
+        }
+
+        public bool IsGameOver()
+        {
+            return _emptySpacesRemaining == 0;
+        }
+
+        public State TallyWinner()
+        {
+            if (IsGameOver())
+            {
+                int crossScore = 0;
+                int circleScore = 0;
+
+                foreach(State state in _board)
+                {
+                    if(state == State.Cross)
+                    {
+                        crossScore++;
+                    }
+                    else
+                    {
+                        circleScore++;
+                    }
+                }
+
+                if(crossScore > circleScore)
+                {
+                    return State.Cross;
+                }
+                else if(circleScore > crossScore)
+                {
+                    return State.Circle;
+                }
+                else
+                {
+                    return State.Empty;
+                }
+            }
+
+            return State.Empty;
         }
 
         public void DrawBoard()

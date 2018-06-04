@@ -182,7 +182,7 @@ namespace Reversi
                 }
                 else if (!_board.AnyPlayerPiecesRemaining(_player2))
                 {
-                    Console.WriteLine("\nPlayer 2 out of pieces. Game Over!");
+                    Console.WriteLine("\nPlayer 2 is out of pieces. Game Over!");
                     break;
                 }
 
@@ -194,7 +194,7 @@ namespace Reversi
                 }
                 else if (!_board.AnyPlayerPiecesRemaining(_player1))
                 {
-                    Console.WriteLine("\nPlayer 1 out of pieces. Game Over!");
+                    Console.WriteLine("\nPlayer 1 is out of pieces. Game Over!");
                     break;
                 }
                 else if(!(_board.IsAnyMovePossible(_player1) || _board.IsAnyMovePossible(_player2)))

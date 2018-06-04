@@ -211,5 +211,10 @@ namespace Reversi
 
             return _board.TallyWinner();
         }
+
+        public void Reset()
+        {
+            _board = new Board(_board.SideDimensions);
+        }
     }
 }

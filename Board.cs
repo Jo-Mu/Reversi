@@ -46,14 +46,14 @@ namespace Reversi
             }
         }
 
-        public State GetStateAt(Position pos)
+        private State GetStateAt(Position pos)
         {
             return _board[pos.y, pos.x];
         }
 
         public bool IsEmptyAt(Position pos)
         {
-            return _board[pos.y, pos.x] == State.Empty;
+            return GetStateAt(pos) == State.Empty;
         }
 
         public bool IsOutOfBounds(Position pos)
@@ -91,17 +91,13 @@ namespace Reversi
 
             if (IsEmptyAt(pos))
             {
-                State enemyState = (playerState == State.Cross) ? State.Circle : State.Cross;
-
                 for (int x = -1; x <= 1; x++)
                 {
                     for(int y = -1; y <= 1; y++)
                     {
-                        Position posChange = new Position(x, y);
-
-                        if(!(x == 0 && y == 0) && !IsOutOfBounds(pos + posChange))
+                        if(!(x == 0 && y == 0))
                         {
-                            if(FlipSurroundedPieces(pos, posChange, playerState, true))
+                            if(FlipSurroundedPieces(pos, new Position(x, y), playerState, true))
                             {
                                 validMove = true;
                             }
@@ -117,6 +113,51 @@ namespace Reversi
             }
 
             return validMove;
+        }
+
+        public bool IsAnyMovePossible(State playerState)
+        {
+            bool movePossible = false;
+
+            for(int x1 = 0; x1 < _sideDimensions; x1++)
+            {
+                for(int y1 = 0; y1 < _sideDimensions; y1++)
+                {
+                    Position pos = new Position(x1, y1);
+
+                    if(IsEmptyAt(pos) && IsAdjacentToEnemyPiece(pos, playerState))
+                    {
+                        for (int x2 = -1; x2 <= 1; x2++)
+                        {
+                            for (int y2 = -1; y2 <= 1; y2++)
+                            {
+                                if (!(x2 == 0 && y2 == 0))
+                                {
+                                    if (IsSurroundingPieces(pos, new Position(x2, y2), playerState, true))
+                                    {
+                                        movePossible = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return movePossible;
+        }
+
+        public bool AnyPlayerPiecesRemaining(State playerState)
+        {
+            foreach(State state in _board)
+            {
+                if(state == playerState)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void Flip(Position pos)
@@ -154,6 +195,33 @@ namespace Reversi
             else if (FlipSurroundedPieces(neighborPos, posChange, playerState, false))
             {
                 Flip(neighborPos);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsSurroundingPieces(Position pos, Position posChange, State playerState, bool isInitialPos)
+        {
+            Position neighborPos = pos + posChange;
+
+            if (IsOutOfBounds(neighborPos) || IsEmptyAt(neighborPos))
+            {
+                return false;
+            }
+            else if (GetStateAt(neighborPos) == playerState)
+            {
+                if (isInitialPos)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (IsSurroundingPieces(neighborPos, posChange, playerState, false))
+            {
                 return true;
             }
 

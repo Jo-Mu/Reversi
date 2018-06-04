@@ -101,7 +101,7 @@ namespace Reversi
 
                         if(!(x == 0 && y == 0) && !IsOutOfBounds(pos + posChange))
                         {
-                            if(GetStateAt(pos + posChange) == enemyState && FlipSurroundedPieces(pos, posChange, playerState))
+                            if(FlipSurroundedPieces(pos, posChange, playerState, true))
                             {
                                 validMove = true;
                             }
@@ -132,7 +132,7 @@ namespace Reversi
             }
         }
 
-        private bool FlipSurroundedPieces(Position pos, Position posChange, State playerState)
+        private bool FlipSurroundedPieces(Position pos, Position posChange, State playerState, bool isInitialPos)
         {
             Position neighborPos = pos + posChange;
 
@@ -142,9 +142,16 @@ namespace Reversi
             }
             else if (GetStateAt(neighborPos) == playerState)
             {
-                return true;
+                if (isInitialPos)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
-            else if (FlipSurroundedPieces(neighborPos, posChange, playerState))
+            else if (FlipSurroundedPieces(neighborPos, posChange, playerState, false))
             {
                 Flip(neighborPos);
                 return true;
@@ -171,7 +178,7 @@ namespace Reversi
                     {
                         crossScore++;
                     }
-                    else
+                    else if(state == State.Circle)
                     {
                         circleScore++;
                     }

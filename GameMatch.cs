@@ -18,6 +18,9 @@ namespace Reversi
             _board = board;
         }
 
+        //Handles the turn of a given player use arrow keys to move cursor and select a position on the board and then 'Enter' or 'Space' to select it.
+        //If the move is possible then the given player's piece will be placed on the board and the board will update.
+        //'S' can be pressed to skip the player's turn if he/she so chooses.
         private void PlayerTurn(State playerState)
         {
             bool turnIsOver = false;
@@ -26,6 +29,7 @@ namespace Reversi
             string playerSymbol;
             string enemySymbol;
 
+            //Sets up initial variables based on the given State of the player.
             if (playerState == State.Cross)
             {
                 initialTurnStatus = "\nPlayer 1's turn:\nPress 'Enter' or 'Space' to place piece.\nIf unable to make a move press 'S' to skip turn.";
@@ -41,6 +45,7 @@ namespace Reversi
                 enemySymbol = "X";
             }
 
+            //Loops until a either a valid move is made or if the player skips his/her turn.
             while (!turnIsOver)
             {
                 Console.Clear();
@@ -143,6 +148,7 @@ namespace Reversi
                 {
                     break;
                 }
+                //Move is valid if it's on an empty space, adjacent to an enemy piece, and if it surrounds(captures) an enemy piece.
                 else if (!_board.IsEmptyAt(selectedPos))
                 {
                     turnStatus = "\nSpace is already occupied!\n" + initialTurnStatus;
@@ -171,6 +177,8 @@ namespace Reversi
         {
             bool boardFullGameOver = false;
 
+            //Game will continue until either the board is full, no more valid moves can be made, or if one player runs out of pieces.
+            //Winner is then decided.
             while (!boardFullGameOver)
             {
                 PlayerTurn(_player1);

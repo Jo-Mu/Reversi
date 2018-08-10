@@ -12,6 +12,7 @@ namespace Reversi
 
         static void Main(string[] args)
         {
+            //Set up 8x8 board.
             int boardSideDimensions = 8;
             Board board = new Board(boardSideDimensions);
 
@@ -27,10 +28,13 @@ namespace Reversi
             int player1Wins = 0;
             int player2Wins = 0;
 
+            //Play until the game is quit.
             while (playingGame)
             {
+                //Get result of the game match.
                 State gameResult = match.Play();
 
+                //Add to score of the match winner or both if a tie and then prsent score tally to console.
                 switch (gameResult)
                 {
                     case State.Cross:
@@ -60,6 +64,7 @@ namespace Reversi
                 Console.WriteLine("Player 2: " + player2Wins);
                 Console.Write("\nPress 'Enter' to play another game or any other key to quit the game");
                 
+                //Press 'Enter' for a rematch or any other key to quit game. The scores are then tallied and the winner is presented
                 if(Console.ReadKey().Key == ConsoleKey.Enter)
                 {
                     match.Reset();

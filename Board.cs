@@ -30,6 +30,7 @@ namespace Reversi
             _sideDimensions = sideDimensions;
             _emptySpacesRemaining = (sideDimensions * sideDimensions) - 4;
 
+            //Sets center pieces for the start of game.
             for(int x = (sideDimensions / 2) - 1; x <= sideDimensions / 2; x++)
             {
                 for (int y = (sideDimensions / 2) - 1; y <= sideDimensions / 2; y++)
@@ -85,6 +86,7 @@ namespace Reversi
             return false;
         }
 
+        //Places piece on board, updates board, and returns true If a valid move else returns false;
         public bool AttemptPlacePieceAt(Position pos, State playerState)
         {
             bool validMove = false;
@@ -115,6 +117,7 @@ namespace Reversi
             return validMove;
         }
 
+        //This is specific to the player State given, checks the entire board.
         public bool IsAnyMovePossible(State playerState)
         {
             bool movePossible = false;
@@ -160,6 +163,7 @@ namespace Reversi
             return false;
         }
 
+        //Flips the State of the piece at the given position. Cross-->Circle/Circle-->Cross
         private void Flip(Position pos)
         {
             if (GetStateAt(pos) == State.Cross)
@@ -173,6 +177,8 @@ namespace Reversi
             }
         }
 
+        //If a piece at a given position surrounds an enemy piece at a given direction then all the surrounded pieces will be flipped.
+        //initialPosition boolean ensures that the given initial position is excluded so it returns false if no flips possible (not valid).
         private bool FlipSurroundedPieces(Position pos, Position posChange, State playerState, bool isInitialPos)
         {
             Position neighborPos = pos + posChange;
@@ -201,6 +207,7 @@ namespace Reversi
             return false;
         }
 
+        //Same as FlipSurroundingPieces() but without flipping simply returns boolean if a piece is surrounding enemy pieces making a flip possible.
         private bool IsSurroundingPieces(Position pos, Position posChange, State playerState, bool isInitialPos)
         {
             Position neighborPos = pos + posChange;
@@ -233,6 +240,8 @@ namespace Reversi
             return _emptySpacesRemaining == 0;
         }
 
+        //Tallies the number pieces of each player State on the board.
+        //Returns the State of the player with the most pieces or the 'Empty' State if a tie.
         public State TallyWinner()
         {
             int crossScore = 0;
